@@ -93,16 +93,33 @@ public class tcss343 {
 		printPath(path, cost);
 	}
 	
+	/**
+	 * Use divide and conquer to solve the trading post problem.
+	 * @param tradingPosts A 2D array of integers that contains the cost to travel to each post.
+	 */
 	public static void divideAndConquerPath(int[][] tradingPosts) {
+		// Create our cost and path array.
 		int[] cost = new int[tradingPosts.length];
 		int[] path = new int[tradingPosts.length];
-		divideAndConquerPathHelper(tradingPosts, 0, cost, path);
+		// Call our helper method
+		divideAndConquerPathHelper(tradingPosts, 0, cost, path); // O(n^2)
+		// Print path
 		printPath(path, cost);
 	}
 	
+	/**
+	 * A helper method to do the recursion for the trading post problem.
+	 * @param tradingPosts A 2D array of integers that contains the cost to travel to each post.
+	 * @param index The index the algorithm is working on.
+	 * @param cost An array of current cost. 
+	 * @param path An array of the current path.
+	 */
 	public static void divideAndConquerPathHelper(int[][] tradingPosts, int index, int[] cost, int[] path) {
+		// If the index is less than the number of available post.
 		if (index < tradingPosts.length) {
+			// Get the prices to travel at our current post
 			int[] row = tradingPosts[index];
+			// GO through each post and assign the proper cost and path.
 			for (int i = index+1; i < tradingPosts.length; i++) {
 				if (index == 0) {
 					cost[i] = row[i];
@@ -112,6 +129,7 @@ public class tcss343 {
 					path[i] = index;
 				}
 			}
+			// Call the helper method on the next trading post.
 			divideAndConquerPathHelper(tradingPosts, index+1, cost, path);
 		}
 	}
