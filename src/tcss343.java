@@ -35,6 +35,7 @@ public class tcss343 {
 			brutePath(tradingPosts);
 			
 			// Divide and Conquer
+			divideAndConquerPath(tradingPosts);
 			
 			
 		} catch (FileNotFoundException ex) {
@@ -83,14 +84,25 @@ public class tcss343 {
 	
 	public static void divideAndConquerPath(int[][] tradingPosts) {
 		int[] cost = new int[tradingPosts.length];
-		for (int i = 0; i < cost.length; i++){
-			cost[i] = Integer.MAX_VALUE;
-		}
-		divideAndConquerPathHelper(tradingPosts, cost);
+		int[] path = new int[tradingPosts.length];
+		divideAndConquerPathHelper(tradingPosts, 0, cost, path);
+		printPath(path, cost);
 	}
 	
-	public static void divideAndConquerPathHelper(int[][] tradingPosts, int[] cost) {
-		
+	public static void divideAndConquerPathHelper(int[][] tradingPosts, int index, int[] cost, int[] path) {
+		if (index < tradingPosts.length) {
+			int[] row = tradingPosts[index];
+			for (int i = index+1; i < tradingPosts.length; i++) {
+				if (index == 0) {
+					cost[i] = row[i];
+					path[i] = index;
+				} else if (row[i] + cost[i-1] < cost[i]) {
+					cost[i] = row[i] + cost[i-1];
+					path[i] = index;
+				}
+			}
+			divideAndConquerPathHelper(tradingPosts, index+1, cost, path);
+		}
 	}
 	
 	public static void printPath(int[] path, int[] cost) {
