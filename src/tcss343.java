@@ -2,9 +2,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
-
+/**
+ * TCSS 343 Project
+ * @author Aaron Chau
+ * @author Will Almond
+ * @author Tyler Brent
+ * @version Spring 2016
+ */
 public class tcss343 {
 
+	/**
+	 * Main method gets reads the file and drives each method.
+	 */
 	public static void main(String[] args) {
 		FileReader fileReader = null; 
 		BufferedReader buffReader = null;
@@ -44,7 +53,9 @@ public class tcss343 {
 			System.out.println("Error while reading file.");
 		}
 	}
-	
+	/**
+	 * Bute force method of trading posts.
+	 */
 	public static void brutePath(int[][] tradingPosts) {
 		// Number of trading posts. 
 		int size = tradingPosts.length;
