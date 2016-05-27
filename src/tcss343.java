@@ -2,9 +2,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
-
+/**
+ * TCSS 343 Project
+ * @author Aaron Chau
+ * @author Will Almond
+ * @author Tyler Brent
+ * @version Spring 2016
+ */
 public class tcss343 {
 
+	/**
+	 * Main method gets reads the file and drives each method.
+	 */
 	public static void main(String[] args) {
 		FileReader fileReader = null; 
 		BufferedReader buffReader = null;
@@ -12,7 +21,7 @@ public class tcss343 {
 		int[][] tradingPosts = null;
 		try {
 			// Get file to read
-			fileReader = new FileReader(args[0]);
+			fileReader = new FileReader("input.txt");
 			buffReader = new BufferedReader(fileReader);
 			
 			// Get first line
@@ -43,7 +52,9 @@ public class tcss343 {
 			System.out.println("Error while reading file.");
 		}
 	}
-	
+	/**
+	 * Brute force method of trading posts.
+	 */
 	public static void brutePath(int[][] tradingPosts) {
 		// Number of trading posts. 
 		int size = tradingPosts.length;
@@ -90,7 +101,19 @@ public class tcss343 {
 	}
 	
 	public static void divideAndConquerPathHelper(int[][] tradingPosts, int[] cost) {
-		
+		int L[]=null;
+		cost[1] = 0;
+		for(int i = 2; i < tradingPosts.length; i++){
+			cost[i] = cost[i-1]+tradingPosts[i-1][i];
+			L[i]=i-1;
+			for(int j = i -2; j > 1; j--){
+				if(cost[i] + tradingPosts[j][i] < cost[i]){
+					cost[i] = cost[j] + tradingPosts[j][i];
+					L[i] = j;
+				}
+			}
+			printPath(L, cost);
+		}
 	}
 	
 	public static void printPath(int[] path, int[] cost) {
