@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.io.FileReader;
 /**
  * TCSS 343 Project
@@ -10,49 +13,66 @@ import java.io.FileReader;
  * @version Spring 2016
  */
 public class tcss343 {
-
 	/**
 	 * Main method gets reads the file and drives each method.
 	 */
 	public static void main(String[] args) {
-		FileReader fileReader = null; 
-		BufferedReader buffReader = null;
-		String line = "";
 		int[][] tradingPosts = null;
-		try {
-			// Get file to read
-			fileReader = new FileReader(args[0]);
-			buffReader = new BufferedReader(fileReader);
-			
-			// Get first line
-			line = buffReader.readLine();
-			// Find out how many post we have. 
-			final int size = line.split("\t").length;
-			tradingPosts = new int[size][size];
-			
-			// Add the cost values of each trading post
-			for (int i = 0; i < size; i++) {
-				String[] values = line.split("\t");
-				for (int j = 0; j < size; j++) {
-					tradingPosts[i][j] = values[j].equals("NA") ? 
-							Integer.MAX_VALUE : Integer.parseInt(values[j]);
-				}
-				line = buffReader.readLine();
-			} 
-			
-			// Brute force method
-			brutePath(tradingPosts);
-			
-			// Divide and Conquer
-			divideAndConquerPath(tradingPosts);
-			
-			
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to find file.");
-		} catch (IOException ex) {
-			System.out.println("Error while reading file.");
+		
+		// Create the sample files. 
+		// createSampleFiles(new int[]{100, 200, 400, 600, 800});
+		
+		// Read the input file
+		tradingPosts = readFile(args[0]);
+		// printMatrix(tradingPosts); // Print the matrix if you like.
+		runCheapestAlgorithms(tradingPosts);
+		
+		// Read through sample files.
+		for (int i = 0; i < 5; i++) { // 5 sample inputs
+			tradingPosts = readFile("sample" + i + "input.txt");
+			runCheapestAlgorithms(tradingPosts);
 		}
 	}
+	
+	public static void createSampleFiles(int[] sampleSizes) {
+		int[][] sample = null;
+		// Create sample inputs
+		for (int i = 0; i < sampleSizes.length; i++) {
+			try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+		              new FileOutputStream("sample" + i + "input.txt"), "utf-8"))) {
+			   sample = tradingPostsFactory(sampleSizes[i]);
+			   writePostToFile(sample, writer);
+			   System.out.println("Create file #" + i);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void writePostToFile(int[][] array, Writer writer) throws IOException {
+		for (int i = 0; i < array.length; i++){
+			StringBuilder sb = new StringBuilder();
+			sb.append((array[i][0] == Integer.MAX_VALUE) ? "NA" : array[i][0] + "");
+			for (int j = 1; j < array.length; j++) {
+				sb.append("\t"); // tab
+				sb.append(array[i][j] == Integer.MAX_VALUE ? "NA" : array[i][j]);
+			}
+			sb.append("\n"); // new line
+			writer.write(sb.toString());
+		}
+	}
+	
+	public static void runCheapestAlgorithms(int[][] tradingPosts) {
+		// Brute force method
+		brutePath(tradingPosts);
+		// Divide and Conquer method
+		divideAndConquerPath(tradingPosts);
+		// Dynamic method 
+		// dynamicPath(tradingPosts); 
+		
+		System.out.println();
+	}
+	
 	/**
 	 * Bute force method of trading posts.
 	 */
@@ -134,6 +154,72 @@ public class tcss343 {
 		}
 	}
 	
+	/**
+	 * Read a file and return a n by n matrix with the trading post prices.
+	 * NA values in the text file will use Integer.MAX_VALUE. 
+	 * @param file the file name as a string. 
+	 * @return a trading post matrix
+	 */
+	public static int[][] readFile(String file) {
+		// Get file to read
+		FileReader fileReader;
+		BufferedReader buffReader;
+
+		int[][] tradingPosts = null;
+		try {
+			fileReader = new FileReader(file);
+			buffReader = new BufferedReader(fileReader);
+			
+			// Get the first line
+			String line = buffReader.readLine();
+			// Find out how many post we have. 
+			final int size = line.split("\t").length;
+			tradingPosts = new int[size][size];
+			
+			// Add the cost values of each trading post
+			for (int i = 0; i < size; i++) {
+				String[] values = line.split("\t");
+				for (int j = 0; j < size; j++) {
+					tradingPosts[i][j] = values[j].equals("NA") ? 
+							Integer.MAX_VALUE : Integer.parseInt(values[j]);
+				}
+				line = buffReader.readLine();
+			} 
+			buffReader.close();
+			fileReader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tradingPosts;
+	}
+	
+	/**
+	 * Create a sudo random matrix that represents prices for the trading post problem.
+	 * @param size is the size of the n by n matrix.
+	 * @return a n by n matrix.
+	 */
+	public static int[][] tradingPostsFactory(int size) {
+		int[][] array = new int[size][size];
+		for (int row = 0; row < array.length; row++) {
+			for (int col = 0; col < array.length; col++) {
+				if (row == col) {
+					array[row][col] = 0;
+				} else if (col < row) {
+					array[row][col] = Integer.MAX_VALUE;
+				} else {
+					array[row][col] = array[row][col-1] + (int) Math.ceil(Math.random() * 5);
+				}
+			}
+		}
+		return array;
+	}
+	
+	/**
+	 * Print the path and the cost given 
+	 * @param path the path taken in an array
+	 * @param cost the cost along the way
+	 */
 	public static void printPath(int[] path, int[] cost) {
 		System.out.print("The cheapest path is to travel from posts ");
 		System.out.print("1-");
@@ -146,12 +232,50 @@ public class tcss343 {
 		System.out.println(path.length + " and it cost $" + cost[cost.length-1] + ".");
 	}
 	
+	/**
+	 * Prints the values of an array.
+	 * @param arr the array that needs to be printed. 
+	 */
 	public static void printArray(int[] arr) {
 		System.out.print("[" + arr[0]);
 		for (int i = 1; i < arr.length; i++) {
 			System.out.print(", " + arr[i]);
 		}
 		System.out.println("]");
+	}
+	
+	/**
+	 * Prints a n by n matrix
+	 * @param array the matrix.
+	 */
+	public static void printMatrix(int[][] array) {
+		System.out.println("[");
+		for (int i = 0; i < array.length; i++) {
+			System.out.print("[" + num2String(array[i][0]));
+			for (int j = 1; j < array.length; j++){ 
+				System.out.print(", " + num2String(array[i][j]));
+			}
+			System.out.println("]");
+		}
+		System.out.println("]\n");
+	}
+	
+	/** 
+	 * Creates a string number and gives the number spaced paddings to the left.
+	 * @param number the number you want to be padded.
+	 * @return a string value of the number being printed with padding.
+	 */
+	public static String num2String(int number) {
+		int length = (int) (Math.log10(number) + 1);
+		int maxPadding = (int) (Math.log10(Integer.MAX_VALUE) + 1);
+		int padding = maxPadding - length;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < padding; i++ ){
+			sb.insert(0, " ");
+		}
+		sb.append(number);
+		
+		return sb.toString();
 	}
 
 }
