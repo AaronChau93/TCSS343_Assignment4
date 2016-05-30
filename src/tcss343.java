@@ -23,8 +23,8 @@ public class tcss343 {
 		// createSampleFiles(new int[]{100, 200, 400, 600, 800});
 		
 		// Read the input file
-		tradingPosts = readFile(args[0]);
-		// printMatrix(tradingPosts); // Print the matrix if you like.
+		tradingPosts = readFile(args[0]); // If this doesn't work you're not passing in "input.txt" as a param.
+		// printMatrix(tradingPosts);
 		runCheapestAlgorithms(tradingPosts);
 		
 		// Read through sample files.
@@ -34,6 +34,10 @@ public class tcss343 {
 		}
 	}
 	
+	/** 
+	 * Create the sample files given sample sizes.
+	 * @param sampleSizes an array of matrix sizes.
+	 */
 	public static void createSampleFiles(int[] sampleSizes) {
 		int[][] sample = null;
 		// Create sample inputs
@@ -43,12 +47,19 @@ public class tcss343 {
 			   sample = tradingPostsFactory(sampleSizes[i]);
 			   writePostToFile(sample, writer);
 			   System.out.println("Create file #" + i);
+			   writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
+	/**
+	 * Writes the trading post matrix to a file. 
+	 * @param array the matrix
+	 * @param writer the writer to write to.
+	 * @throws IOException
+	 */
 	public static void writePostToFile(int[][] array, Writer writer) throws IOException {
 		for (int i = 0; i < array.length; i++){
 			StringBuilder sb = new StringBuilder();
@@ -62,6 +73,11 @@ public class tcss343 {
 		}
 	}
 	
+	/**
+	 * Runs the brute, divide and conquer, and dynamic programming algorithms
+	 * given the trading post matrix.
+	 * @param tradingPosts a integer matrix.
+	 */
 	public static void runCheapestAlgorithms(int[][] tradingPosts) {
 		// Brute force method
 		brutePath(tradingPosts);
@@ -74,7 +90,7 @@ public class tcss343 {
 	}
 	
 	/**
-	 * Bute force method of trading posts.
+	 * Brute force method of trading posts.
 	 */
 	public static void brutePath(int[][] tradingPosts) {
 		// Number of trading posts. 
@@ -127,6 +143,8 @@ public class tcss343 {
 		printPath(path, cost);
 	}
 	
+
+
 	/**
 	 * A helper method to do the recursion for the trading post problem.
 	 * @param tradingPosts A 2D array of integers that contains the cost to travel to each post.
