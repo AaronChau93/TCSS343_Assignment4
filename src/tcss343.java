@@ -23,7 +23,7 @@ public class tcss343 {
 		// createSampleFiles(new int[]{100, 200, 400, 600, 800});
 		
 		// Read the input file
-		tradingPosts = readFile(args[0]); // If this doesn't work you're not passing in "input.txt" as a param.
+		tradingPosts = readFile("input.txt"); // If this doesn't work you're not passing in "input.txt" as a param.
 		// printMatrix(tradingPosts);
 		runCheapestAlgorithms(tradingPosts);
 		
@@ -84,7 +84,7 @@ public class tcss343 {
 		// Divide and Conquer method
 		divideAndConquerPath(tradingPosts);
 		// Dynamic method 
-		// dynamicPath(tradingPosts); 
+		dynamicPath(tradingPosts); 
 		
 		System.out.println();
 	}
@@ -171,6 +171,24 @@ public class tcss343 {
 			divideAndConquerPathHelper(tradingPosts, index+1, cost, path);
 		}
 	}
+	/**
+	 * This is the algorithm to find the solution to the cheapest path.
+	 * @param tradingPosts
+	 * @return path array
+	 */
+	public static int[] dynamicPath(int[][] tradingPosts) {
+		int[] path = null;
+		path[1] = 0;
+		for(int i = 2; i < tradingPosts.length; i++){
+			path[i] = path[i-1]+tradingPosts[i-1][i];
+			for(int j = i -2; j > 1; j--){
+				if(path[i] + tradingPosts[j][i] < path[i]){
+					path[i] = path[j] + tradingPosts[j][i];
+				}
+			}
+		}
+		return path;
+	}
 	
 	/**
 	 * Read a file and return a n by n matrix with the trading post prices.
@@ -206,7 +224,6 @@ public class tcss343 {
 			buffReader.close();
 			fileReader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return tradingPosts;
