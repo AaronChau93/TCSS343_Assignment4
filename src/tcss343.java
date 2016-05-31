@@ -94,9 +94,9 @@ public class tcss343 {
 		
 		
 		// Dynamic method
-//		startingTime = System.currentTimeMillis();
-//	 	dynamicPath(tradingPosts); 
-//		System.out.println("Dynamic finished in: " + (System.currentTimeMillis() - startingTime) + "ms."); 
+		startingTime = System.currentTimeMillis();
+	 	dynamicPath(tradingPosts); 
+		System.out.println("Dynamic finished in: " + (System.currentTimeMillis() - startingTime) + "ms."); 
 		
 		System.out.println();
 	}
@@ -125,11 +125,11 @@ public class tcss343 {
 		for (int j = 1; j < size; j++) {
 			// Get the price
 			int[] row = tradingPosts[j];
-			for (int i = j+1; i < size; i++) {
+			for (int i = 1; i < size; i++) {
 				// If the price at the previous post plus the price
 				// at the current post is less than the current cost at 
 				// the current post then...
-				if (row[i] + cost[i-1] < cost[i]) {
+				if (row[i] != 0 && row[i] != Integer.MAX_VALUE && row[i] + cost[i-1] < cost[i]) {
 					// Switch canoes
 					cost[i] = row[i] + cost[i-1];
 					// Track which post we switched to.
@@ -188,18 +188,42 @@ public class tcss343 {
 	 * @param tradingPosts
 	 * @return path array
 	 */
-	public static int[] dynamicPath(int[][] tradingPosts) {
-		int[] path = null;
-		path[1] = 0;
-		for(int i = 2; i < tradingPosts.length; i++){
-			path[i] = path[i-1]+tradingPosts[i-1][i];
-			for(int j = i -2; j > 1; j--){
-				if(path[i] + tradingPosts[j][i] < path[i]){
-					path[i] = path[j] + tradingPosts[j][i];
-				}
-			}
+	public static void dynamicPath(int[][] tradingPosts) {
+
+		// Number of trading posts. 
+		int size = tradingPosts.length;
+		
+		// Array to store paths.
+		int[] path = new int[size];
+		
+		// Initialize new cost array with the price of traveling from the 
+		// first post to the nth post.
+		int[] cost = new int[size];
+		for (int i = 0; i < cost.length; i++) {
+			cost[i] = tradingPosts[0][i];
+			path[i] = 0;
 		}
-		return path;
+		
+		// Traveling to the first post cost $0. You're already there.
+		cost[0] = 0;
+		// For each other post.
+		for (int j = 1; j < size; j++) {
+			// Get the price
+			int[] row = tradingPosts[j];
+			for (int i = j+1; i < size; i++) {
+				// If the price at the previous post plus the price
+				// at the current post is less than the current cost at 
+				// the current post then...
+				if (row[i] + cost[i-1] < cost[i]) {
+					// Switch canoes
+					cost[i] = row[i] + cost[i-1];
+					// Track which post we switched to.
+					path[i] = j;
+				} // else stay on the same canoe.
+			}
+		} // O(n^2)
+
+		printPath(path, cost);
 	}
 	
 	/**
