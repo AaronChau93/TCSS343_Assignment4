@@ -79,12 +79,24 @@ public class tcss343 {
 	 * @param tradingPosts a integer matrix.
 	 */
 	public static void runCheapestAlgorithms(int[][] tradingPosts) {
+		System.out.println("Running length: " + tradingPosts.length);
+		
+		
 		// Brute force method
+		long startingTime = System.currentTimeMillis();
 		brutePath(tradingPosts);
+		System.out.println("Brute finished in: " + (System.currentTimeMillis() - startingTime) + "ms.");
+		
 		// Divide and Conquer method
+		startingTime = System.currentTimeMillis();
 		divideAndConquerPath(tradingPosts);
-		// Dynamic method 
-		// dynamicPath(tradingPosts); 
+		System.out.println("Divide and conquer finished in: " + (System.currentTimeMillis() - startingTime) + "ms.");
+		
+		
+		// Dynamic method
+		// startingTime = System.currentTimeMillis();
+		// dynamicPath(tradingPosts);
+		// System.out.println("Dynamic finished in: " + (System.currentTimeMillis() - startingTime) + "ms.");
 		
 		System.out.println();
 	}
