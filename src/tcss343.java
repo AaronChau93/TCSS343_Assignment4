@@ -189,7 +189,6 @@ public class tcss343 {
 	 * @return path array
 	 */
 	public static void dynamicPath(int[][] tradingPosts) {
-
 		// Number of trading posts. 
 		int size = tradingPosts.length;
 		
