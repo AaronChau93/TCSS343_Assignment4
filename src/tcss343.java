@@ -220,7 +220,7 @@ public class tcss343 {
 					path[i] = j;
 				} // else stay on the same canoe.
 			}
-		} // O(n^2)
+		} // O(n m)
 
 		printPath(path, cost);
 	}
